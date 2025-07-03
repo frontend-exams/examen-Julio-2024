@@ -39,7 +39,12 @@ export default function RestaurantsScreen ({ navigation, route }) {
         {item.averageServiceMinutes !== null &&
           <TextSemiBold>Avg. service time: <TextSemiBold textStyle={{ color: GlobalStyles.brandPrimary }}>{item.averageServiceMinutes} min.</TextSemiBold></TextSemiBold>
         }
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <TextSemiBold>Shipping: <TextSemiBold textStyle={{ color: GlobalStyles.brandPrimary }}>{item.shippingCosts.toFixed(2)}€</TextSemiBold></TextSemiBold>
+        {(item.performances.length > 0) && ( // Hay que tener en cuenta que la lista de performances viene ya del backend con la restricción de que solo aparecen las performances que se van a llevar a cabo en una semana
+          <TextRegular textStyle={styles.badge}>¡Próxima actuación!</TextRegular>
+        )}
+        </View>
         <View style={styles.actionButtonsContainer}>
           <Pressable
             onPress={() => navigation.navigate('EditRestaurantScreen', { id: item.id })
@@ -74,6 +79,24 @@ export default function RestaurantsScreen ({ navigation, route }) {
             <MaterialCommunityIcons name='delete' color={'white'} size={20}/>
             <TextRegular textStyle={styles.text}>
               Delete
+            </TextRegular>
+          </View>
+        </Pressable>
+        {/* Solución: Botón para crear actuación */}
+        <Pressable
+            onPress={() => navigation.navigate('CreatePerformanceScreen', { id: item.id }) }
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed
+                  ? GlobalStyles.brandSuccessTap
+                  : GlobalStyles.brandSuccess
+              },
+              styles.actionButton
+            ]}>
+          <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
+            <MaterialCommunityIcons name='thought-bubble' color={'white'} size={20}/>
+            <TextRegular textStyle={styles.text}>
+              Nueva Actuación
             </TextRegular>
           </View>
         </Pressable>
@@ -195,7 +218,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignSelf: 'center',
     flexDirection: 'column',
-    width: '50%'
+    width: '33%'
   },
   actionButtonsContainer: {
     flexDirection: 'row',
@@ -212,5 +235,13 @@ const styles = StyleSheet.create({
   emptyList: {
     textAlign: 'center',
     padding: 50
+  },
+  badge: {
+    textAlign: 'center',
+    borderWidth: 2,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    borderColor: GlobalStyles.brandSuccess,
+    color: GlobalStyles.brandSuccess
   }
 })
