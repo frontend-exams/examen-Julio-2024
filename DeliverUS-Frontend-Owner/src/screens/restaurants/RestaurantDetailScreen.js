@@ -20,6 +20,46 @@ export default function RestaurantDetailScreen ({ navigation, route }) {
     fetchRestaurantDetail()
   }, [route])
 
+  // Render para mostrar las próximas actuaciones (será una flatList)
+  const renderNextPerformances = () => {
+    return (
+      <FlatList
+        ListHeaderComponent={renderPerformanceHeader}
+        ListEmptyComponent={renderEmptyPerformanceList}
+        style={styles.containerPerformance}
+        data={restaurant.performances}
+        renderItem={renderPerformance}
+        keyExtractor={item => item.id.toString()}
+      />
+    )
+  }
+  const renderPerformanceHeader = () => {
+    return ( // No puedo poner un { expresión } dentro de un return sin más, tiene que ser en los children de un componente JSX
+      <View>
+      {restaurant.performances?.length !== 0 &&
+        (<TextSemiBold style={{ fontSize: 20, color: 'white' }}>Próximas actuaciones:</TextSemiBold>)
+      }
+      </View>
+    )
+  }
+  const renderEmptyPerformanceList = () => {
+    return (
+      <View>
+        <TextRegular style={styles.emptyPerformanceList}>¡No hay actuaciones en fechas próximas!</TextRegular>
+      </View>
+    )
+  }
+  const renderPerformance = ({ item }) => {
+    return (
+      <TextRegular style={{ color: 'white' }}>{item.group} el próximo {weekDay(item)}, {new Date(item.appointment).toLocaleDateString()}</TextRegular>
+    )
+  }
+  // Hacemos una función auxiliar para que nos devuelva el día de la semana según la fecha
+  const weekDay = (item) => {
+    const week = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
+    const dayWeek = new Date(item.appointment).getDay() // Que no se te olviden los dos paréntesis () para invocar al método !!!!!!
+    return week[dayWeek]
+  }
   const renderHeader = () => {
     return (
       <View>
@@ -31,7 +71,10 @@ export default function RestaurantDetailScreen ({ navigation, route }) {
             <TextRegular textStyle={styles.description}>{restaurant.restaurantCategory ? restaurant.restaurantCategory.name : ''}</TextRegular>
           </View>
         </ImageBackground>
-
+        {/* Solución */}
+        <View style={styles.containerPerformance}>
+        {renderNextPerformances()}
+        </View>
         <Pressable
           onPress={() => navigation.navigate('CreateProductScreen', { id: restaurant.id })
           }
@@ -244,5 +287,18 @@ const styles = StyleSheet.create({
     bottom: 5,
     position: 'absolute',
     width: '90%'
+  },
+  emptyPerformanceList: {
+    textAlign: 'center',
+    fontSize: 15,
+    padding: 20,
+    color: 'white'
+  },
+  containerPerformance: {
+    padding: 20,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    flexDirection: 'column',
+    alignItems: 'center',
+    borderRadius: 10
   }
 })

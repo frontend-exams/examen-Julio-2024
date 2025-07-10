@@ -26,6 +26,17 @@ export default function RestaurantsScreen ({ navigation, route }) {
     }
   }, [loggedInUser, route])
 
+  // Función que devuelve true si queda menos de una semana para la actuación
+  /*
+  const lessThanAWeek = (item) => {
+    const currentDate = new Date()
+    const weekInMs = 7 * 24 * 60 * 60 * 1000
+    for (const performance of item.performance) {
+      if (new Date(performance.appointment) - currentDate <= weekInMs) { return true }
+    }
+  }
+  */
+  // OJO!!!---> No seas tonto, en el backend ya se gestiona que solo se asocian al restaurante las performances que le quedan menos de una semana !!! (Con eso de Op)
   const renderRestaurant = ({ item }) => {
     return (
       <ImageCard
@@ -39,7 +50,13 @@ export default function RestaurantsScreen ({ navigation, route }) {
         {item.averageServiceMinutes !== null &&
           <TextSemiBold>Avg. service time: <TextSemiBold textStyle={{ color: GlobalStyles.brandPrimary }}>{item.averageServiceMinutes} min.</TextSemiBold></TextSemiBold>
         }
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <TextSemiBold>Shipping: <TextSemiBold textStyle={{ color: GlobalStyles.brandPrimary }}>{item.shippingCosts.toFixed(2)}€</TextSemiBold></TextSemiBold>
+        {/* Solución */}
+        {item.performances.length !== 0 && (
+          <TextRegular style = {[styles.badge, { color: GlobalStyles.brandPrimary, borderColor: GlobalStyles.brandSuccess }]}>¡Próxima Actuación!</TextRegular>
+        )}
+        </View>
         <View style={styles.actionButtonsContainer}>
           <Pressable
             onPress={() => navigation.navigate('EditRestaurantScreen', { id: item.id })
@@ -74,6 +91,25 @@ export default function RestaurantsScreen ({ navigation, route }) {
             <MaterialCommunityIcons name='delete' color={'white'} size={20}/>
             <TextRegular textStyle={styles.text}>
               Delete
+            </TextRegular>
+          </View>
+        </Pressable>
+        {/* Solución */}
+        <Pressable
+            onPress={() => navigation.navigate('CreatePerformanceScreen', { id: item.id })
+            }
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed
+                  ? GlobalStyles.brandSuccessTap
+                  : GlobalStyles.brandSuccess
+              },
+              styles.actionButton
+            ]}>
+          <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
+            <MaterialCommunityIcons name='octagram' color={'white'} size={20}/>
+            <TextRegular textStyle={styles.text}>
+              Nueva Actuación
             </TextRegular>
           </View>
         </Pressable>
@@ -195,7 +231,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignSelf: 'center',
     flexDirection: 'column',
-    width: '50%'
+    width: '33%' // Tenemos que reducir el width de los botones para que se vean por pantalla
   },
   actionButtonsContainer: {
     flexDirection: 'row',
@@ -212,5 +248,11 @@ const styles = StyleSheet.create({
   emptyList: {
     textAlign: 'center',
     padding: 50
+  },
+  badge: {
+    textAlign: 'center',
+    borderWidth: 2,
+    paddingHorizontal: 10,
+    borderRadius: 10
   }
 })

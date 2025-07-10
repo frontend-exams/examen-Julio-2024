@@ -114,7 +114,8 @@ const show = async function (req, res) {
         where: {
           appointment:
              {
-               [Op.and]: [{ [Op.gte]: today },
+               [Op.and]: [ // El and incluye las dos operaciones
+                 { [Op.gte]: today },
                  { [Op.lt]: nextWeekLimit }]
              }
         },
