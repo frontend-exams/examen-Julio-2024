@@ -20,6 +20,45 @@ export default function RestaurantDetailScreen ({ navigation, route }) {
     fetchRestaurantDetail()
   }, [route])
 
+  // Solución
+  const renderNextPerformances = () => {
+    return (
+      <FlatList
+        ListHeaderComponent={renderPerformanceHeader}
+        ListEmptyComponent={renderEmptyPerformancesList}
+        style={styles.containerPerformance}
+        data={restaurant.performances}
+        renderItem={renderPerformance}
+        keyExtractor={item => item.id.toString()}
+      />
+    )
+  }
+
+  const renderPerformanceHeader = () => {
+    return (
+      <View>
+      {restaurant.performances?.length !== 0 && (
+        <TextSemiBold style={{ fontSize: 20, textAlign: 'center', color: 'white' }}>Próximas actuaciones:</TextSemiBold>
+      )}
+      </View>
+
+    )
+  }
+
+  const renderEmptyPerformancesList = () => {
+    return (
+      <View>
+      <TextRegular style={styles.emptyPerformanceList}>¡No hay actualizaciones en fechas próximas!</TextRegular>
+      </View>
+    )
+  }
+  const renderPerformance = ({ item }) => {
+    const week = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado']
+    const indexDay = new Date(item.appointment).getDay()
+    return (
+      <TextRegular style={{ color: 'white' }}>{item.group} el próximo {week[indexDay]},{new Date(item.appointment).toLocaleDateString()}</TextRegular>
+    )
+  }
   const renderHeader = () => {
     return (
       <View>
@@ -31,7 +70,10 @@ export default function RestaurantDetailScreen ({ navigation, route }) {
             <TextRegular textStyle={styles.description}>{restaurant.restaurantCategory ? restaurant.restaurantCategory.name : ''}</TextRegular>
           </View>
         </ImageBackground>
-
+        {/* Solución */}
+        <View style={styles.containerPerformance}>
+        {renderNextPerformances()}
+        </View>
         <Pressable
           onPress={() => navigation.navigate('CreateProductScreen', { id: restaurant.id })
           }
@@ -244,5 +286,25 @@ const styles = StyleSheet.create({
     bottom: 5,
     position: 'absolute',
     width: '90%'
+  },
+  // Estilos de solución
+  badge: {
+    textAlign: 'center',
+    borderWidth: 2, // Si no se pone borderWidth no se ve el border
+    paddingHorizontal: 10,
+    borderRadius: 10
+  },
+  emptyPerformanceList: {
+    textAlign: 'center',
+    fontSize: 15,
+    padding: 20,
+    color: 'white'
+  },
+  containerPerformance: {
+    padding: 20,
+    backgroundColor: 'rgba(0,0,0,0.5)', // No puedes dejar un espacio entre rgba y el paréntesis !!!!!!!!!
+    flexDirection: 'column',
+    alignItems: 'center',
+    borderRadius: 10
   }
 })

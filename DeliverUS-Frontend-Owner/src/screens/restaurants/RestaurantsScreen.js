@@ -77,6 +77,25 @@ export default function RestaurantsScreen ({ navigation, route }) {
             </TextRegular>
           </View>
         </Pressable>
+        {/* Solución */}
+        <Pressable
+            onPress={() => navigation.navigate('CreatePerformanceScreen', { id: item.id })
+            }
+            style={({ pressed }) => [
+              {
+                backgroundColor: pressed
+                  ? GlobalStyles.brandSuccessTap
+                  : GlobalStyles.brandSuccess
+              },
+              styles.actionButton
+            ]}>
+          <View style={[{ flex: 1, flexDirection: 'row', justifyContent: 'center' }]}>
+            <MaterialCommunityIcons name='octagram' color={'white'} size={20}/>
+            <TextRegular textStyle={styles.text}>
+              Nueva Actuación
+            </TextRegular>
+          </View>
+        </Pressable>
         </View>
       </ImageCard>
     )
@@ -195,7 +214,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignSelf: 'center',
     flexDirection: 'column',
-    width: '50%'
+    width: '33%' // 33% para que quepan 3 botones
   },
   actionButtonsContainer: {
     flexDirection: 'row',

@@ -14,6 +14,9 @@ const loadModel = (sequelize, DataTypes) => {
       Restaurant.belongsTo(models.User, { foreignKey: 'userId', as: 'user' })
       Restaurant.hasMany(models.Product, { foreignKey: 'restaurantId', as: 'products' })
       Restaurant.hasMany(models.Order, { foreignKey: 'restaurantId', as: 'orders' })
+      // Solution --> Esto se usa para acceder así: restaurant.performances
+      // hasMany es la relación uno a muchos
+      Restaurant.hasMany(models.Performance, { foreignKey: 'restaurantId', as: 'performances' })
     }
 
     async getAverageServiceTime () {
